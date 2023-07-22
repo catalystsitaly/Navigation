@@ -174,9 +174,12 @@
         footer.style.opacity = hideFooter ? '0' : '1';
         footer.style.pointerEvents = hideFooter ? 'none' : 'auto';
     }
-    // 随机生成色相的函数
-    function getRandomHue() {
-        return Math.floor(Math.random() * 360);
+
+    // 随机生成色相和亮度的函数
+    function getRandomHueAndValue() {
+        let hue = Math.floor(Math.random() * 360);
+        let value = Math.random() * (1 - 0.5) + 0.5;  // 生成0.3到0.6之间的随机亮度
+        return {hue, value};
     }
 
     // 将HSV颜色转换为RGB颜色的函数
@@ -199,13 +202,17 @@
     }
 
     // 在页面加载时设置随机颜色
-    let hue1 = getRandomHue();
-    let hue2 = (hue1 + 100) % 360;  // Ensure the second hue is distinct
-    document.documentElement.style.setProperty('--color1', hsvToRgb(hue1 / 360, 1, 1));
-    document.documentElement.style.setProperty('--color2', hsvToRgb(hue2 / 360, 1, 1));
+    let hueAndValue1 = getRandomHueAndValue();
+    let hueAndValue2 = getRandomHueAndValue();
+    hueAndValue2.hue = (hueAndValue1.hue + 100) % 360;  // 确保第二个色相是明显的
+    document.documentElement.style.setProperty('--color1', hsvToRgb(hueAndValue1.hue / 360, 1, hueAndValue1.value));
+    document.documentElement.style.setProperty('--color2', hsvToRgb(hueAndValue2.hue / 360, 1, hueAndValue2.value));
+
 
     //随即确定一个头像
     window.onload = function() {
+        // 检查页脚
+        checkFooterVisibility();
         // 获取logo元素
         var logo = document.querySelector(".logo img");
 
@@ -215,7 +222,10 @@
         // 设置logo元素的src属性
         logo.src = "static/avatar_" + randomAvatarNumber + ".jpeg";
     }
-
+    // 当窗口滚动时执行检查页脚可见性的函数
+    window.onscroll = function() {
+        checkFooterVisibility();
+    }
 
 </script>
 </body>

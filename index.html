@@ -160,6 +160,18 @@
     // 在页面加载时设置随机颜色
     document.documentElement.style.setProperty('--color1', getRandomColor());
     document.documentElement.style.setProperty('--color2', getRandomColor());
+    window.addEventListener('scroll', function () {
+        var footer = document.querySelector('footer');
+        var contentHeight = document.body.scrollHeight;  // 页面内容总高度
+        var scrollHeight = window.pageYOffset;  // 已经滚动的高度
+        var windowHeight = window.innerHeight;  // 可视窗口的高度
+
+        var footerHeight = footer.offsetHeight;  // 页脚的高度
+        var hideFooter = (scrollHeight + windowHeight < contentHeight - footerHeight);
+
+        footer.style.visibility = hideFooter ? 'hidden' : 'visible';
+    });
+
 </script>
 </body>
 </html>

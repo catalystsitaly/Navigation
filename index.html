@@ -123,6 +123,9 @@
         footer a{
             color: inherit;
         }
+        h3 {
+            color: aliceblue;
+        }
 
     </style>
 </head>
@@ -130,7 +133,8 @@
 <main class="container">
     <div class="content">
         <div class="logo">
-            <img src="static/avatar.jpeg" alt="欢迎光临" />
+            <img id="randomAvatar" src="" alt="欢迎光临" />
+            <h3>欢迎光临蟹堡王餐厅</h3>
         </div>
         <div class="links">
             <a href="#">主页</a>
@@ -157,10 +161,8 @@
         return color;
     }
 
-    // 在页面加载时设置随机颜色
-    document.documentElement.style.setProperty('--color1', getRandomColor());
-    document.documentElement.style.setProperty('--color2', getRandomColor());
-    window.addEventListener('scroll', function () {
+    //自动隐藏页脚
+    function checkFooterVisibility() {
         var footer = document.querySelector('footer');
         var contentHeight = document.body.scrollHeight;  // 页面内容总高度
         var scrollHeight = window.pageYOffset;  // 已经滚动的高度
@@ -169,8 +171,51 @@
         var footerHeight = footer.offsetHeight;  // 页脚的高度
         var hideFooter = (scrollHeight + windowHeight < contentHeight - footerHeight);
 
-        footer.style.visibility = hideFooter ? 'hidden' : 'visible';
-    });
+        footer.style.opacity = hideFooter ? '0' : '1';
+        footer.style.pointerEvents = hideFooter ? 'none' : 'auto';
+    }
+    // 随机生成色相的函数
+    function getRandomHue() {
+        return Math.floor(Math.random() * 360);
+    }
+
+    // 将HSV颜色转换为RGB颜色的函数
+    function hsvToRgb(h, s, v) {
+        let r, g, b, i, f, p, q, t;
+        i = Math.floor(h * 6);
+        f = h * 6 - i;
+        p = v * (1 - s);
+        q = v * (1 - f * s);
+        t = v * (1 - (1 - f) * s);
+        switch (i % 6) {
+            case 0: r = v, g = t, b = p; break;
+            case 1: r = q, g = v, b = p; break;
+            case 2: r = p, g = v, b = t; break;
+            case 3: r = p, g = q, b = v; break;
+            case 4: r = t, g = p, b = v; break;
+            case 5: r = v, g = p, b = q; break;
+        }
+        return '#' + ((1 << 24) | ((r * 255) << 16) | ((g * 255) << 8) | (b * 255)).toString(16).slice(1);
+    }
+
+    // 在页面加载时设置随机颜色
+    let hue1 = getRandomHue();
+    let hue2 = (hue1 + 100) % 360;  // Ensure the second hue is distinct
+    document.documentElement.style.setProperty('--color1', hsvToRgb(hue1 / 360, 1, 1));
+    document.documentElement.style.setProperty('--color2', hsvToRgb(hue2 / 360, 1, 1));
+
+    //随即确定一个头像
+    window.onload = function() {
+        // 获取logo元素
+        var logo = document.querySelector(".logo img");
+
+        // 生成1-29之间的随机数
+        var randomAvatarNumber = Math.floor(Math.random() * 29) + 1;
+
+        // 设置logo元素的src属性
+        logo.src = "static/avatar_" + randomAvatarNumber + ".jpeg";
+    }
+
 
 </script>
 </body>
